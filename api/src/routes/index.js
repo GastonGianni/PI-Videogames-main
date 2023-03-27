@@ -1,12 +1,27 @@
 const { Router } = require('express');
-// Importar todos los routers;
-// Ejemplo: const authRouter = require('./auth.js');
-
+const genresRouter = require('./genres');
+const videogamesRouter = require('./videogamesRouter');
 
 const router = Router();
 
-// Configurar los routers
-// Ejemplo: router.use('/auth', authRouter);
-
+router.use('/videogames', videogamesRouter);
+router.use('/genres', genresRouter);
 
 module.exports = router;
+
+/*
+    Rutas necesarias
+    GET
+    /videogames
+    /videogames/:idVideogame
+    /videogames/name?="..."
+    /genres
+    
+    POST
+    /videogames
+    
+    ENDPOINTS PERMITIDOS 
+    Por id: "https://api.rawg.io/api/games/{id}"
+    Por nombre: "https://api.rawg.io/api/games?search={game}"
+    Por genero: "https://api.rawg.io/api/genres"
+*/
