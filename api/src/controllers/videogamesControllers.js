@@ -1,6 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const { Videogame } = require('../db');
 const { API_KEY } = process.env;
 const apiUrl = `https://api.rawg.io/api/games`;
@@ -17,14 +17,10 @@ const getAllVideogames = async () => {
   return [...apiResult, ...databaseVideogames];
 };
 const getVideogameByName = async (name, limit) => {
-  const nameLoweCase = name.toLowerCase();
+  const nameLowerCase = name.toLowerCase();
   const databaseVideogames = await Videogame.findAll({
-    where: {
-      name: {
-        [Op.like]: `%${name}`,
-      },
-    },
-    limit: 15,
+    where: Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('name')), 'LIKE', '%' + nameLowerCase + '%'),
+    limit: limit || 15,
   });
 
   const apiVideogames1 = (await axios.get(`${apiUrl}?key=${API_KEY}&page=1&page_size=40`)).data.results;
@@ -33,7 +29,7 @@ const getVideogameByName = async (name, limit) => {
 
   const apiResult = [...apiVideogames1, ...apiVideogames2, ...apiVideogames3];
 
-  const apiResultFiltered = apiResult.filter((game) => game.name.toLowerCase().includes(nameLoweCase)).slice(0, limit);
+  const apiResultFiltered = apiResult.filter((game) => game.name.toLowerCase().includes(nameLowerCase)).slice(0, limit);
 
   return [...apiResultFiltered, ...databaseVideogames];
 };
