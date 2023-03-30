@@ -1,9 +1,9 @@
 require('dotenv').config();
-const axios = require('axios');
-const { Op, Sequelize } = require('sequelize');
-const { Videogame } = require('../db');
 const { API_KEY } = process.env;
-const apiUrl = `https://api.rawg.io/api/games`;
+const apiUrl = 'https://api.rawg.io/api/games';
+const axios = require('axios');
+const { Sequelize } = require('sequelize');
+const { Videogame } = require('../db');
 
 const getAllVideogames = async () => {
   const databaseVideogames = await Videogame.findAll();
