@@ -1,9 +1,17 @@
-const { createVideogame, getVideogameById } = require('../controllers/videogamesControllers');
+const { createVideogame, getVideogameById, getAllVideogames, getVideogameByName } = require('../controllers/videogamesControllers');
 
-const getVideogamesHandler = (req, res) => {
+const getVideogamesHandler = async (req, res) => {
   const { name } = req.query;
-  name !== undefined ? res.send(`Buscando videojuegos con name : ${name}`) : res.send('Mostrar todos los videojuegos');
+  const limit = 15;
+  try {
+    // console.log(videogames.length);
+    const videogames = name ? await getVideogameByName(name, limit) : await getAllVideogames();
+    res.status(200).json(videogames);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
 };
+
 const getVideogameHandler = async (req, res) => {
   const { idVideogame } = req.params;
 
@@ -29,6 +37,7 @@ const createVideogameHandler = async (req, res) => {
 module.exports = { getVideogamesHandler, getVideogameHandler, createVideogameHandler };
 
 /*
+--MODELO DE POST--
 {
   "name":"League of legends",
   "description":"Juego re piolon",
@@ -37,6 +46,4 @@ module.exports = { getVideogamesHandler, getVideogameHandler, createVideogameHan
   "release_date":"2001-01-20",
   "rating":"4.9"
 } 
-MODELO DE POST
-
 */
